@@ -1,0 +1,82 @@
+#include <Servo.h>
+Servo myservo1,myservo2;  // create servo object to control a servo
+
+int potpin = A0;  // analog pin used to connect the potentiometer
+int val;    // variable to read the value from the analog pin
+int led1 = 6;
+int led2 = 7;
+int GPIO = A1;
+int newval = 0;
+int GND = 12;
+int gnd = 11;
+
+void setup() 
+{
+  // put your setup code here, to run once:
+myservo1.attach(3);  // attaches the servo on pin 9 to the servo object
+myservo2.attach(4);  // attaches the servo on pin 9 to the servo object
+pinMode(led1,OUTPUT);
+pinMode(led2,OUTPUT);
+pinMode(GPIO,INPUT);
+pinMode(GND,OUTPUT);
+pinMode(gnd,OUTPUT);
+Serial.begin(9600);
+digitalWrite(GND,LOW);
+digitalWrite(gnd,LOW);
+}
+
+void loop() 
+{
+
+ 
+  // put your main code here, to run repeatedly:
+int a = analogRead(GPIO);
+Serial.println(a);
+if(a>500)
+  {
+  analogWrite(led1,10);
+  analogWrite(led2,10);
+  delay(600);
+  }
+  else
+    {
+    digitalWrite(led1,HIGH);
+    digitalWrite(led2,HIGH);
+    }
+val = analogRead(potpin);            // reads the value of the potentiometer (value between 0 and 1023) 
+  val = map(val, 0, 1023, 0, 180);// scale it to use it with the servo (value between 0 and 180) 
+ // Serial.println(val);
+  if(val>=60 && val<=120)
+  {
+  myservo1.write(90);
+  myservo2.write(90);
+  delay(15);
+  }
+  if((val>30)&&(val<60))
+  {
+    newval = 90-(60-val);
+    myservo1.write(newval);
+    myservo2.write(newval);
+    delay(15);
+  }
+  if((val>120)&&(val<150))
+  {
+    newval = 90+(val-120);
+    myservo1.write(newval);
+    myservo2.write(newval);
+    delay(15);
+  }
+  if((val>0)&&(val<=30)) // sets the servo position according to the scaled value
+   {
+    myservo1.write(60);
+    myservo2.write(60);
+    delay(15);// waits for the servo to get there 
+   }
+  if((val>150)&&(val<=180))
+  {
+    myservo1.write(120);
+    myservo2.write(120);
+    delay(15);  
+  }
+ 
+}
